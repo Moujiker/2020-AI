@@ -9,10 +9,10 @@ from init_weights import init_weights
 '''
 class UNet_3Plus(nn.Module):
 
-    def __init__(self, args):
+    def __init__(self):
         super(UNet_3Plus, self).__init__()
-        self.args = args
-        in_channels = 1
+        #self.args = args
+        in_channels = 3
         n_classes = 8
         feature_scale = 4
         is_deconv = True

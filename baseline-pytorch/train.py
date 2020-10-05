@@ -13,7 +13,7 @@ metric = SegmentationMetric(num_classes)
 
 def train(train_loader, model, criterion, optimizer):
     train_loss_sum, train_fwiou_sum, n = 0.0, 0.0, 0
-    model.train()
+    #model.train()
 
     for input, target in tqdm(train_loader):
         input = input
@@ -27,8 +27,8 @@ def train(train_loader, model, criterion, optimizer):
         optimizer.step()
 
         for i in range(output.shape[0]):
-            pre = output[i, :, :, :].argmax(axis=0).cpu()
-            label = target[i, :, :].cpu()
+            pre = output[i, :, :, :].argmax(axis=0).detach().numpy()
+            label = target[i, :, :].detach().numpy()
             metric.addBatch(pre, label)
             FWIoU = metric.Frequency_Weighted_Intersection_over_Union()
             train_fwiou_sum += FWIoU
@@ -50,8 +50,8 @@ def validate(val_loader, model, criterion):
         loss = criterion(output, target.long())
 
         for i in range(output.shape[0]):
-            pre = output[i, :, :, :].argmax(axis=0).cpu()
-            label = target[i, :, :].cpu()
+            pre = output[i, :, :, :].argmax(axis=0).detach().numpy()
+            label = target[i, :, :].detach().numpy()
             metric.addBatch(pre, label)
             FWIoU = metric.Frequency_Weighted_Intersection_over_Union()
             val_fwiou_sum += FWIoU
@@ -62,7 +62,7 @@ def validate(val_loader, model, criterion):
 
     return val_loss_sum / n, val_fwiou_sum / n
 
-model = unet(num_classes=num_classes)
+#model = unet(num_classes=num_classes)
 model = UNet_3Plus()
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
